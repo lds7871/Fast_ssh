@@ -1,4 +1,4 @@
-using Fasst_ssh.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fasst_ssh;
 
@@ -8,8 +8,8 @@ public partial class App : Application
 	{
 		InitializeComponent();
 
-		// 应用上次保存的主题偏好（默认暗色）
-		UserAppTheme = Theme.Load();
+		// 固定深色主题（不提供切换）
+		UserAppTheme = AppTheme.Dark;
 	}
 
 	protected override Window CreateWindow(IActivationState? activationState)

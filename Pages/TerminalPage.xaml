@@ -3,33 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Fasst_ssh.Pages.TerminalPage"
              Title="终端"
-             BackgroundColor="#0D1117"
+             BackgroundColor="{AppThemeBinding Dark={StaticResource BgDark}, Light={StaticResource BgLight}}"
              Shell.NavBarIsVisible="False">
 
-    <Grid>
-        <!-- xterm.js 真实终端 -->
-        <WebView x:Name="TerminalWebView" />
+    <!-- 固定顶栏 + 下方整个终端区域（同一层级，无悬浮层） -->
+    <Grid RowDefinitions="Auto,1,*">
 
-        <!-- 顶部浮动工具栏：会话信息 + 断开 -->
-        <Border BackgroundColor="#D90D1117"
-                Stroke="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 12"
-                Padding="14,8"
-                Margin="12,14,12,0"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                <Label x:Name="SessionLabel" Text="" FontSize="14"
-                       TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
-                       VerticalOptions="Center" LineBreakMode="TailTruncation" />
-                <Button x:Name="DisconnectBtn" Text="断开" Clicked="OnDisconnectClicked"
-                        Grid.Column="1"
-                        BackgroundColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
-                        TextColor="White" CornerRadius="8" HeightRequest="38" FontSize="14"
-                        Padding="18,0" />
-            </Grid>
-        </Border>
+        <!-- 固定顶部工具栏：会话信息 + 断开 -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12"
+              Padding="14,10"
+              BackgroundColor="{AppThemeBinding Dark={StaticResource SurfaceDark}, Light={StaticResource SurfaceLight}}">
+            <Label x:Name="SessionLabel" Text="" FontSize="14"
+                   TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
+                   VerticalOptions="Center" LineBreakMode="TailTruncation" />
+            <Button x:Name="DisconnectBtn" Text="断开" Clicked="OnDisconnectClicked"
+                    Grid.Column="1"
+                    BackgroundColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
+                    TextColor="White" CornerRadius="8" HeightRequest="38" FontSize="14"
+                    Padding="18,0" />
+        </Grid>
+
+        <!-- 顶栏分隔线 -->
+        <BoxView Grid.Row="1"
+                 Color="{AppThemeBinding Dark={StaticResource BorderDark}, Light={StaticResource BorderLight}}"
+                 HeightRequest="1" />
+
+        <!-- 终端区域：占满剩余空间 -->
+        <WebView Grid.Row="2" x:Name="TerminalWebView" />
+
     </Grid>
 
 </ContentPage>

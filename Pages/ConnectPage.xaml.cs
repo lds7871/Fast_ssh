@@ -33,20 +33,9 @@ public partial class ConnectPage : ContentPage
         UserEntry.Text = _lastUser;
         PassEntry.Text = _lastPass;
 
-        // 主题按钮图标：当前暗色显示 🌙，亮色显示 ☀️
-        ThemeBtn.Text = Application.Current?.UserAppTheme == AppTheme.Light ? "☀️" : "🌙";
-
         // 回到连接页时断开旧会话
         if (SshSession.Instance.IsConnected)
             SshSession.Instance.Disconnect();
-    }
-
-    // ---------- 主题切换 ----------
-
-    private void OnThemeToggleClicked(object? sender, EventArgs e)
-    {
-        var next = Theme.Toggle();
-        ThemeBtn.Text = next == AppTheme.Light ? "☀️" : "🌙";
     }
 
     private void OnRememberLabelTapped(object? sender, TappedEventArgs e)
