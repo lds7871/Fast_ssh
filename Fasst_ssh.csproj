@@ -20,7 +20,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>SSH终端</ApplicationTitle>
+		<ApplicationTitle>SSH快连</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.fasst_ssh</ApplicationId>
@@ -50,10 +50,10 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" ForegroundScale="0.62" Color="#0D1117" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" ForegroundScale="0.62" Color="#A371F7" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\terminal.svg" Color="#0D1117" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\terminal.svg" Color="#A371F7" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />

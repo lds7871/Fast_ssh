@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>SSH终端</title>
+<title>SSH快连</title>
 <link rel="stylesheet" href="xterm.css"/>
 <style>
 html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0D1117; }
@@ -77,10 +77,39 @@ html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0D11
         };
     }
 
-    term.onData(function (data) {
+    // 发送输入（带 Ctrl/Alt 组合键处理）
+    var ctrlMode = false;
+    var altMode = false;
+    function sendInput(data) {
         if (ws && ws.readyState === 1) ws.send(data);
         else pending.push(data);
+    }
+    term.onData(function (data) {
+        // Ctrl 模式：单个字母转成对应控制字符（如 c -> \x03 = Ctrl+C）
+        if (ctrlMode && data.length === 1) {
+            var code = data.charCodeAt(0);
+            if (code >= 97 && code <= 122) { sendInput(String.fromCharCode(code - 96)); return; }
+            if (code >= 65 && code <= 90) { sendInput(String.fromCharCode(code - 64)); return; }
+        }
+        // Alt 模式：单个字符前加 ESC 前缀（Meta 键）
+        if (altMode && data.length === 1) {
+            sendInput('\x1b' + data);
+            return;
+        }
+        sendInput(data);
     });
+
+    // 供 C# 顶栏功能键调用：ctrl/alt 切换模式，up/down/left/right 发送方向键转义序列
+    window.__key = function (kind) {
+        switch (kind) {
+            case 'ctrl': ctrlMode = !ctrlMode; break;
+            case 'alt': altMode = !altMode; break;
+            case 'up': sendInput('\x1b[A'); break;
+            case 'down': sendInput('\x1b[B'); break;
+            case 'left': sendInput('\x1b[D'); break;
+            case 'right': sendInput('\x1b[C'); break;
+        }
+    };
 
     // 尺寸变化（旋转 / 软键盘 / 工具栏）时重新适配并通知服务器
     var fitTimer = null;

@@ -1,4 +1,4 @@
-# SSH终端（Fasst_ssh）
+# SSH快连（Fasst_ssh）
 
 基于 .NET MAUI 的安卓 SSH 客户端，支持在手机上像真实终端一样连接并操作服务器。
 

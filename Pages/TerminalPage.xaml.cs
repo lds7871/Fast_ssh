@@ -7,6 +7,8 @@ public partial class TerminalPage : ContentPage
     private readonly TerminalBridge _bridge = new();
     private bool _webViewLoaded;
     private bool _started;
+    private bool _ctrlOn;
+    private bool _altOn;
 
     public TerminalPage()
     {
@@ -94,6 +96,46 @@ public partial class TerminalPage : ContentPage
         }
         catch { }
     }
+
+    // ---------- 功能键（Ctrl / Alt / 方向键） ----------
+
+    private void OnCtrlClicked(object? sender, EventArgs e)
+    {
+        _ctrlOn = !_ctrlOn;
+        UpdateKeyVisual(CtrlBtn, _ctrlOn);
+        _ = TerminalWebView.EvaluateJavaScriptAsync("window.__key('ctrl')");
+    }
+
+    private void OnAltClicked(object? sender, EventArgs e)
+    {
+        _altOn = !_altOn;
+        UpdateKeyVisual(AltBtn, _altOn);
+        _ = TerminalWebView.EvaluateJavaScriptAsync("window.__key('alt')");
+    }
+
+    private void OnArrowClicked(object? sender, EventArgs e)
+    {
+        var key = (sender as Button)?.Text switch
+        {
+            "↑" => "up",
+            "↓" => "down",
+            "←" => "left",
+            "→" => "right",
+            _ => null
+        };
+        if (key != null)
+            _ = TerminalWebView.EvaluateJavaScriptAsync($"window.__key('{key}')");
+    }
+
+    /// <summary>更新功能键激活视觉：激活时用强调色背景，未激活时普通面板色。</summary>
+    private void UpdateKeyVisual(Button btn, bool on)
+    {
+        btn.BackgroundColor = on ? Res("AccentDark") : Res("Surface2Dark");
+        btn.TextColor = on ? Res("TextOnAccentDark") : Res("TextPrimaryDark");
+    }
+
+    private static Color Res(string key)
+        => Application.Current?.Resources.TryGetValue(key, out var v) == true && v is Color c ? c : Colors.White;
 
     private async void OnDisconnectClicked(object? sender, EventArgs e)
     {

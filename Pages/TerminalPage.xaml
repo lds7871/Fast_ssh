@@ -6,23 +6,65 @@
              BackgroundColor="{AppThemeBinding Dark={StaticResource BgDark}, Light={StaticResource BgLight}}"
              Shell.NavBarIsVisible="False">
 
-    <!-- 固定顶栏 + 下方整个终端区域（同一层级，无悬浮层） -->
+    <ContentPage.Resources>
+        <!-- 顶栏小按键：数字键盘上没有的功能键 -->
+        <Style x:Key="KeyBtn" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource Surface2Dark}, Light={StaticResource Surface2Light}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="HeightRequest" Value="34" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="14,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- 固定顶栏（会话栏 + 功能键行）+ 下方整个终端区域（同一层级，无悬浮层） -->
     <Grid RowDefinitions="Auto,1,*">
 
-        <!-- 固定顶部工具栏：会话信息 + 断开 -->
+        <!-- 固定顶部工具栏 -->
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto"
-              ColumnSpacing="12"
-              Padding="14,10"
               BackgroundColor="{AppThemeBinding Dark={StaticResource SurfaceDark}, Light={StaticResource SurfaceLight}}">
-            <Label x:Name="SessionLabel" Text="" FontSize="14"
-                   TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
-                   VerticalOptions="Center" LineBreakMode="TailTruncation" />
-            <Button x:Name="DisconnectBtn" Text="断开" Clicked="OnDisconnectClicked"
-                    Grid.Column="1"
-                    BackgroundColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
-                    TextColor="White" CornerRadius="8" HeightRequest="38" FontSize="14"
-                    Padding="18,0" />
+
+            <!-- 第一行：会话信息 + 断开 -->
+            <Grid RowDefinitions="Auto,Auto">
+
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12"
+                      Padding="14,10">
+                    <Label x:Name="SessionLabel" Text="" FontSize="14"
+                           TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
+                           VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                    <Button x:Name="DisconnectBtn" Text="断开" Clicked="OnDisconnectClicked"
+                            Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
+                            BorderWidth="1"
+                            TextColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
+                            CornerRadius="8" HeightRequest="38" FontSize="14"
+                            Padding="18,0" />
+                </Grid>
+
+                <!-- 第二行：手机键盘上没有的功能键（Ctrl/Alt/方向键） -->
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      ColumnSpacing="8"
+                      Padding="14,0,14,10">
+                    <Button x:Name="CtrlBtn" Text="Ctrl" Style="{StaticResource KeyBtn}"
+                            Clicked="OnCtrlClicked" />
+                    <Button x:Name="AltBtn" Text="Alt" Style="{StaticResource KeyBtn}" Grid.Column="1"
+                            Clicked="OnAltClicked" />
+                    <Button Text="↑" Style="{StaticResource KeyBtn}" Grid.Column="2"
+                            Clicked="OnArrowClicked" />
+                    <Button Text="↓" Style="{StaticResource KeyBtn}" Grid.Column="3"
+                            Clicked="OnArrowClicked" />
+                    <Button Text="←" Style="{StaticResource KeyBtn}" Grid.Column="4"
+                            Clicked="OnArrowClicked" />
+                    <Button Text="→" Style="{StaticResource KeyBtn}" Grid.Column="5"
+                            Clicked="OnArrowClicked" />
+                </Grid>
+
+            </Grid>
         </Grid>
 
         <!-- 顶栏分隔线 -->
