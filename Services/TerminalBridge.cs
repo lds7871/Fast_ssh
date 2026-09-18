@@ -1,6 +1,6 @@
 using Fleck;
 
-namespace Fasst_ssh.Services;
+namespace Fast_ssh.Services;
 
 /// <summary>
 /// 本地 WebSocket 桥：把 WebView 里的 xterm.js 与 SSH ShellStream 双向连接。

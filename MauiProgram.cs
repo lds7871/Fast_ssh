@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Fasst_ssh;
+namespace Fast_ssh;
 
 public static class MauiProgram
 {

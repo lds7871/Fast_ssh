@@ -1,6 +1,6 @@
 using Renci.SshNet;
 
-namespace Fasst_ssh.Services;
+namespace Fast_ssh.Services;
 
 /// <summary>
 /// 全局唯一的 SSH 会话：负责连接服务器并创建交互式终端流（ShellStream）。

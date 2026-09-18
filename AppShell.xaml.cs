@@ -1,6 +1,6 @@
-using Fasst_ssh.Pages;
+using Fast_ssh.Pages;
 
-namespace Fasst_ssh;
+namespace Fast_ssh;
 
 public partial class AppShell : Shell
 {

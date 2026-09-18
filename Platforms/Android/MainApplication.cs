@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace Fasst_ssh;
+namespace Fast_ssh;
 
 [Application]
 public class MainApplication : MauiApplication

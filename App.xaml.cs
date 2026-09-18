@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fasst_ssh;
+namespace Fast_ssh;
 
 public partial class App : Application
 {

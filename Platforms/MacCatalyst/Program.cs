@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace Fasst_ssh;
+namespace Fast_ssh;
 
 public class Program
 {

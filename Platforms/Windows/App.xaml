@@ -1,8 +1,8 @@
 ﻿<maui:MauiWinUIApplication
-    x:Class="Fasst_ssh.WinUI.App"
+    x:Class="Fast_ssh.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:maui="using:Microsoft.Maui"
-    xmlns:local="using:Fasst_ssh.WinUI">
+    xmlns:local="using:Fast_ssh.WinUI">
 
 </maui:MauiWinUIApplication>

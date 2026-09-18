@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace Fasst_ssh;
+namespace Fast_ssh;
 
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate

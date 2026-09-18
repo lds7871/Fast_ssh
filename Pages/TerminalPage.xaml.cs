@@ -1,6 +1,6 @@
-using Fasst_ssh.Services;
+using Fast_ssh.Services;
 
-namespace Fasst_ssh.Pages;
+namespace Fast_ssh.Pages;
 
 public partial class TerminalPage : ContentPage
 {
