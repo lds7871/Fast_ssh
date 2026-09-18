@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Fasst_ssh.Pages.ConnectPage"
+             Title="连接"
+             BackgroundColor="{AppThemeBinding Dark={StaticResource BgDark}, Light={StaticResource BgLight}}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <!-- 输入框：无背景色，暗色主题下仅文字/占位符着亮色 -->
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}" />
+            <Setter Property="PlaceholderColor" Value="{AppThemeBinding Dark={StaticResource TextSecondaryDark}, Light={StaticResource TextSecondaryLight}}" />
+            <Setter Property="HeightRequest" Value="52" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextOnAccentDark}, Light={StaticResource TextOnAccentLight}}" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="HeightRequest" Value="52" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="28,0" Spacing="14" VerticalOptions="Center">
+
+                <Label Text="SSH终端"
+                       FontSize="40"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}"
+                       HorizontalOptions="Center" />
+
+                <Label Text="快速连接你的服务器"
+                       FontSize="15"
+                       TextColor="{AppThemeBinding Dark={StaticResource TextSecondaryDark}, Light={StaticResource TextSecondaryLight}}"
+                       HorizontalOptions="Center"
+                       Margin="0,0,0,18" />
+
+                <Label Text="主机（IP 或 IP:端口）" TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}" FontSize="14" />
+                <Entry x:Name="HostEntry"
+                       Placeholder="例如 192.168.1.100"
+                       Keyboard="Plain"
+                       ReturnType="Next" />
+
+                <Label Text="端口（可选，默认 22）" TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}" FontSize="14" />
+                <Entry x:Name="PortEntry"
+                       Placeholder="22"
+                       Keyboard="Numeric"
+                       ReturnType="Next" />
+
+                <Label Text="用户名" TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}" FontSize="14" />
+                <Entry x:Name="UserEntry"
+                       Placeholder="用户名"
+                       ReturnType="Next" />
+
+                <Label Text="密码" TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}" FontSize="14" />
+                <Entry x:Name="PassEntry"
+                       Placeholder="密码"
+                       IsPassword="True"
+                       ReturnType="Go"
+                       Completed="OnConnectClicked" />
+
+                <!-- 记住输入 -->
+                <Grid ColumnDefinitions="Auto,*" Margin="0,2,0,0">
+                    <CheckBox x:Name="RememberCheck" Color="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}" Grid.Column="0"
+                              VerticalOptions="Center" />
+                    <Label Text="记住输入"
+                           TextColor="{AppThemeBinding Dark={StaticResource TextSecondaryDark}, Light={StaticResource TextSecondaryLight}}" FontSize="14"
+                           Grid.Column="1" VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRememberLabelTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+
+                <Button x:Name="ConnectBtn"
+                        Text="连接"
+                        Clicked="OnConnectClicked"
+                        Margin="0,10,0,0" />
+
+                <ActivityIndicator x:Name="Busy" IsRunning="False" IsVisible="False"
+                                   Color="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}" HeightRequest="36" />
+
+                <Label x:Name="StatusLabel"
+                       TextColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
+                       FontSize="14"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="False" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- 右上角：主题切换 -->
+        <Button x:Name="ThemeBtn"
+                Text="🌙"
+                Clicked="OnThemeToggleClicked"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}"
+                FontSize="15" Padding="14,6"
+                HorizontalOptions="End" VerticalOptions="Start"
+                Margin="0,16,12,0" />
+
+    </Grid>
+
+</ContentPage>

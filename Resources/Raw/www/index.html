@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SSH终端</title>
+<link rel="stylesheet" href="xterm.css"/>
+<style>
+html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0D1117; }
+#terminal { width:100%; height:100%; }
+</style>
+</head>
+<body>
+<div id="terminal"></div>
+<script src="xterm.js"></script>
+<script src="fit.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var WS_URL = 'ws://127.0.0.1:22886';
+
+    var term = new Terminal({
+        cursorBlink: true,
+        fontSize: 14,
+        fontFamily: 'monospace, "Droid Sans Mono", "Noto Sans Mono CJK SC", sans-serif',
+        scrollback: 5000,
+        theme: {
+            background: '#0D1117',
+            foreground: '#E6EDF3',
+            cursor: '#3FB950',
+            selectionBackground: '#2A2F3A'
+        }
+    });
+
+    var fit = new FitAddon.FitAddon();
+    term.loadAddon(fit);
+    term.open(document.getElementById('terminal'));
+    fit.fit();
+    term.focus();
+
+    var ws = null;
+    var pending = [];       // 连接建立前的输入缓冲
+    var reconnecting = false;
+
+    function sendResize() {
+        if (!ws || ws.readyState !== 1) return;
+        var dims = fit.proposeDimensions();
+        if (!dims) return;
+        ws.send('\u0000resize:' + dims.cols + ':' + dims.rows);
+    }
+
+    function connect() {
+        if (reconnecting) return;
+        reconnecting = true;
+        try {
+            ws = new WebSocket(WS_URL);
+        } catch (e) {
+            reconnecting = false;
+            setTimeout(connect, 800);
+            return;
+        }
+        ws.onopen = function () {
+            reconnecting = false;
+            while (pending.length) ws.send(pending.shift());
+            sendResize();
+        };
+        ws.onmessage = function (ev) {
+            if (typeof ev.data === 'string') term.write(ev.data);
+        };
+        ws.onclose = function () {
+            ws = null;
+            setTimeout(connect, 800);
+        };
+        ws.onerror = function () {
+            try { ws.close(); } catch (e) {}
+        };
+    }
+
+    term.onData(function (data) {
+        if (ws && ws.readyState === 1) ws.send(data);
+        else pending.push(data);
+    });
+
+    // 尺寸变化（旋转 / 软键盘 / 工具栏）时重新适配并通知服务器
+    var fitTimer = null;
+    function doFit() {
+        if (fitTimer) clearTimeout(fitTimer);
+        fitTimer = setTimeout(function () {
+            fit.fit();
+            sendResize();
+        }, 120);
+    }
+    window.addEventListener('resize', doFit);
+    if (window.ResizeObserver) {
+        new ResizeObserver(doFit).observe(document.getElementById('terminal'));
+    }
+
+    // 供 C# 在 WebView 复用（页面重载后重连）时调用
+    window.__reconnect = function () {
+        if (!ws || ws.readyState === 3) connect();
+    };
+
+    connect();
+})();
+</script>
+</body>
+</html>
