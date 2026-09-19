@@ -26,8 +26,8 @@
 		<ApplicationId>com.companyname.fast_ssh</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.01</ApplicationDisplayVersion>
-		<ApplicationVersion>101</ApplicationVersion>
+		<ApplicationDisplayVersion>1.02</ApplicationDisplayVersion>
+		<ApplicationVersion>102</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -48,12 +48,22 @@
 		<AndroidSigningStorePass>$(SSH_KEYSTORE_PASS)</AndroidSigningStorePass>
 	</PropertyGroup>
 
+	<!-- 修复：.NET Android 确定性构建会把 APK 输出文件的修改时间设为固定值（1981-01-01），
+	     打包完成后刷新为当前时间（只改文件 mtime，不影响 APK 内容与签名） -->
+	<Target Name="FixApkTimestamp" AfterTargets="Build"
+	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<ItemGroup>
+			<_ApkOutput Include="$(TargetDir)*.apk" />
+		</ItemGroup>
+		<Touch Files="@(_ApkOutput)" />
+	</Target>
+
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" ForegroundScale="0.62" Color="#A371F7" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" ForegroundScale="0.62" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\terminal.svg" Color="#A371F7" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\terminal.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
