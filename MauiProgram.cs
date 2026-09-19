@@ -21,6 +21,13 @@ public static class MauiProgram
 		{
 			handlers.AddHandler<Microsoft.Maui.Controls.WebView, FocusableWebViewHandler>();
 		});
+
+		// 复制弹窗的只读 Editor：允许长按/框选文本并复制（默认不可选择）
+		Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("EditorTextIsSelectable", (handler, view) =>
+		{
+			if (handler.PlatformView is Android.Widget.TextView tv)
+				tv.SetTextIsSelectable(true);
+		});
 #endif
 
 #if DEBUG

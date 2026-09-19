@@ -29,14 +29,21 @@
             <Grid RowDefinitions="Auto,Auto">
 
                 <Grid Grid.Row="0"
-                      ColumnDefinitions="*,Auto"
+                      ColumnDefinitions="*,Auto,Auto"
                       ColumnSpacing="12"
                       Padding="14,10">
                     <Label x:Name="SessionLabel" Text="" FontSize="14"
                            TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
                            VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                    <Button x:Name="CopyBtn" Text="复制" Grid.Column="1" Clicked="OnCopyClicked"
+                            BackgroundColor="{AppThemeBinding Dark={StaticResource Surface2Dark}, Light={StaticResource Surface2Light}}"
+                            TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
+                            BorderColor="{AppThemeBinding Dark={StaticResource BorderDark}, Light={StaticResource BorderLight}}"
+                            BorderWidth="1"
+                            CornerRadius="8" HeightRequest="38" FontSize="14"
+                            Padding="16,0" />
                     <Button x:Name="DisconnectBtn" Text="断开" Clicked="OnDisconnectClicked"
-                            Grid.Column="1"
+                            Grid.Column="2"
                             BackgroundColor="Transparent"
                             BorderColor="{AppThemeBinding Dark={StaticResource ErrorDark}, Light={StaticResource ErrorLight}}"
                             BorderWidth="1"
@@ -74,6 +81,58 @@
 
         <!-- 终端区域：占满剩余空间 -->
         <WebView Grid.Row="2" x:Name="TerminalWebView" />
+
+        <!-- 复制弹窗：点击「复制」后展示终端全文，用户可在文本框内选择复制 -->
+        <BoxView x:Name="CopyScrim"
+                 Grid.RowSpan="3"
+                 Color="#B0000000"
+                 Opacity="0"
+                 IsVisible="False">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCopyCloseClicked" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <Border x:Name="CopyCard"
+                Grid.RowSpan="3"
+                IsVisible="False"
+                BackgroundColor="{AppThemeBinding Dark={StaticResource SurfaceDark}, Light={StaticResource SurfaceLight}}"
+                Stroke="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}"
+                StrokeThickness="2"
+                StrokeShape="RoundRectangle 16"
+                Padding="20,18"
+                WidthRequest="560"
+                MaximumHeightRequest="1200"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Opacity="0"
+                Scale="0.94">
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
+                <Label Text="终端内容" FontSize="18" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
+                       HorizontalOptions="Center" />
+                <Border Grid.Row="1"
+                        BackgroundColor="{AppThemeBinding Dark={StaticResource Surface2Dark}, Light={StaticResource Surface2Light}}"
+                        Stroke="{AppThemeBinding Dark={StaticResource BorderDark}, Light={StaticResource BorderLight}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="4">
+                    <ScrollView MaximumHeightRequest="860">
+                        <Editor x:Name="CopyEditor"
+                                AutoSize="Disabled"
+                                HeightRequest="700"
+                                FontFamily="monospace"
+                                FontSize="13"
+                                TextColor="{AppThemeBinding Dark={StaticResource TextPrimaryDark}, Light={StaticResource TextPrimaryLight}}"
+                                BackgroundColor="Transparent" />
+                    </ScrollView>
+                </Border>
+                <Button Grid.Row="2" Text="关闭" Clicked="OnCopyCloseClicked"
+                        BackgroundColor="{AppThemeBinding Dark={StaticResource AccentDark}, Light={StaticResource AccentLight}}"
+                        TextColor="{AppThemeBinding Dark={StaticResource TextOnAccentDark}, Light={StaticResource TextOnAccentLight}}"
+                        HeightRequest="44" CornerRadius="10" FontSize="15" />
+            </Grid>
+        </Border>
 
     </Grid>
 

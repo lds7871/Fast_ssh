@@ -137,6 +137,64 @@ public partial class TerminalPage : ContentPage
     private static Color Res(string key)
         => Application.Current?.Resources.TryGetValue(key, out var v) == true && v is Color c ? c : Colors.White;
 
+    // ---------- 复制弹窗 ----------
+
+    private bool _copyVisible;
+
+    private async Task<string> GetTerminalTextAsync()
+    {
+        // JS 侧返回 base64（UTF-8），纯 ASCII 无转义问题
+        var b64 = await TerminalWebView.EvaluateJavaScriptAsync(
+            "window.__getTermText ? window.__getTermText() : ''");
+        var s = (b64 ?? "").Trim('"'); // 去掉 EvaluateJavaScriptAsync 可能带的外层 JSON 引号
+        try
+        {
+            var bytes = Convert.FromBase64String(s);
+            return System.Text.Encoding.UTF8.GetString(bytes);
+        }
+        catch { return s; }
+    }
+
+    private async void OnCopyClicked(object? sender, EventArgs e)
+    {
+        if (_copyVisible) return;
+
+        // 从 WebView 取终端当前全部文本（JS 返回 JSON 编码字符串）；为空时重试一次
+        string text = await GetTerminalTextAsync();
+        if (string.IsNullOrEmpty(text))
+        {
+            await Task.Delay(300);
+            text = await GetTerminalTextAsync();
+        }
+
+        CopyEditor.Text = text;
+        _copyVisible = true;
+        CopyScrim.IsVisible = true;
+        CopyCard.IsVisible = true;
+        CopyScrim.Opacity = 0;
+        CopyCard.Opacity = 0;
+        CopyCard.Scale = 0.94;
+
+        await Task.WhenAll(
+            CopyScrim.FadeToAsync(1, 130),
+            CopyCard.FadeToAsync(1, 130),
+            CopyCard.ScaleToAsync(1, 140, Easing.CubicOut));
+    }
+
+    private async void OnCopyCloseClicked(object? sender, EventArgs e)
+    {
+        if (!_copyVisible) return;
+        _copyVisible = false;
+
+        await Task.WhenAll(
+            CopyScrim.FadeToAsync(0, 110),
+            CopyCard.FadeToAsync(0, 110),
+            CopyCard.ScaleToAsync(0.95, 110, Easing.CubicIn));
+
+        CopyScrim.IsVisible = false;
+        CopyCard.IsVisible = false;
+    }
+
     private async void OnDisconnectClicked(object? sender, EventArgs e)
     {
         await DisconnectAndBackAsync();

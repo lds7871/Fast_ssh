@@ -39,6 +39,8 @@ html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0D11
     fit.fit();
     term.focus();
 
+    window.__term = term; // 暴露给 CDP/调试读取选区与状态
+
     var ws = null;
     var pending = [];       // 连接建立前的输入缓冲
     var reconnecting = false;
@@ -128,6 +130,26 @@ html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0D11
     // 供 C# 在 WebView 复用（页面重载后重连）时调用
     window.__reconnect = function () {
         if (!ws || ws.readyState === 3) connect();
+    };
+
+    // 供 C#「复制」按钮使用：返回终端当前缓冲区全部文本（含 scrollback，去尾部空行）。
+    // 以 base64（UTF-8）返回，纯 ASCII 字符集，避免 EvaluateJavaScriptAsync 的 JSON 转义干扰。
+    window.__getTermText = function () {
+        try {
+            var buf = term.buffer.active;
+            var lines = [];
+            for (var y = 0; y < buf.length; y++) {
+                var line = buf.getLine(y);
+                if (!line) continue;
+                lines.push(line.translateToString(true));
+            }
+            while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+            var str = lines.join('\n');
+            var bytes = new TextEncoder().encode(str);
+            var bin = '';
+            for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+            return btoa(bin);
+        } catch (e) { return ''; }
     };
 
     connect();
